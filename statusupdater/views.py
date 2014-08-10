@@ -16,7 +16,7 @@ def login(request):
 
     parameters = {}
     parameters['client_id'] = settings.GITHUB_CLIENT_ID
-    parameters['redirect_uri'] = "http://astrofrog.pythonanywhere.com/get_code"
+    parameters['redirect_uri'] = request.get_host() + "/get_code"
     parameters['scope'] = 'repo:status'
     parameters['state'] = '1290jdjwoqj'
 
@@ -39,7 +39,7 @@ def get_code(request):
     parameters['client_id'] = settings.GITHUB_CLIENT_ID
     parameters['client_secret'] = settings.GITHUB_CLIENT_SECRET
     parameters['code'] = code
-    parameters['redirect_uri'] = "http://astrofrog.pythonanywhere.com/login-success"
+    parameters['redirect_uri'] = request.get_host() + "/login-success"
 
     response = requests.post(base,
                              parameters,
