@@ -98,5 +98,5 @@ STATIC_URL = '/static/'
 
 APPEND_SLASH=False
 
-GITHUB_CLIENT_ID = open(os.path.join(BASE_DIR,'github_client_id.txt'), 'r').read().strip()
-GITHUB_CLIENT_SECRET = open(os.path.join(BASE_DIR,'github_client_secret.txt'), 'r').read().strip()
+GITHUB_CLIENT_ID = os.environ['GITHUB_CLIENT_ID']
+GITHUB_CLIENT_SECRET = os.environ['GITHUB_CLIENT_SECRET']
