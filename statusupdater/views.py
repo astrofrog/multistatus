@@ -60,8 +60,11 @@ def get_code(request):
 
     # Create user in database
 
-    user = User(username=login, access_token=access_token)
-    user.save()
+    try:
+        User.objects.get(username=login)
+    except User.DoesNotExist:
+        user = User(username=login, access_token=access_token)
+        user.save()
 
     return HttpResponse('Success! Now add a web hook to your GitHub repository')
 
