@@ -1,2 +1,3 @@
 *.pyc
 multistatus/github_client*.txt
+staticfiles

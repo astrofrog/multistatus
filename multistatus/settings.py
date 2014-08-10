@@ -55,12 +55,27 @@ WSGI_APPLICATION = 'multistatus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = {}
+
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Static asset configuration
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -83,6 +98,5 @@ STATIC_URL = '/static/'
 
 APPEND_SLASH=False
 
-CURDIR = os.path.abspath(os.path.dirname(__file__))
-GITHUB_CLIENT_ID = open(os.path.join(CURDIR,'github_client_id.txt'), 'r').read().strip()
-GITHUB_CLIENT_SECRET = open(os.path.join(CURDIR,'github_client_secret.txt'), 'r').read().strip()
+GITHUB_CLIENT_ID = open(os.path.join(BASE_DIR,'github_client_id.txt'), 'r').read().strip()
+GITHUB_CLIENT_SECRET = open(os.path.join(BASE_DIR,'github_client_secret.txt'), 'r').read().strip()
