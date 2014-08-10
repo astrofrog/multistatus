@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login', views.login), 
     url(r'^get_code', views.get_code),
-    url(r'^hook/(?P<hook_id>\d+)/', views.hook),
+    url(r'^hook/(?<hook_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/', views.hook),
 )
