@@ -139,7 +139,6 @@ def hook(response, hook_id):
 
     parameters = json.dumps(parameters)
 
-    import requests
     response = requests.post(base, parameters,
                              headers={'Authorization':'token ' + user.access_token})
 
