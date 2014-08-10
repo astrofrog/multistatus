@@ -89,25 +89,53 @@ def hook(response, hook_id):
     response = json.loads(response.body.decode('utf-8'))
 
     # We avoid any circular triggering
-    if response.get('context') == 'statusupdater':
+    if response.get('context') == 'github-multi-status':
         return HttpResponse("won't comment on my own updates")
 
     # Get the SHA of the commit that triggered the change
     sha = response.get('sha')
 
+    # Find repo name, split into owner and repository
     name = response.get('name')
-
     owner, repo = name.split('/')
+
+    # Get the list of available statuses in reverse chronological order
+    base = 'https://api.github.com/repos/{owner}/{repo}/commits/{sha}/statuses'.format(owner=owner, repo=repo, sha=sha)
+    response = requests.get(base).json()
+
+    # Loop over and keep track only of the latest status for a given context
+    status_dict = {}
+    descr_dict = {}
+    for status in response:
+        context = status['context']
+        if context not in status_dict and context != 'default' and context != 'github-multi-status':
+            status_dict[context] = status['state']
+            descr_dict[context] = status['description']
+
+    # Figure out resulting state
+    if 'pending' in status_dict.values():
+        final_state = 'pending'
+    elif 'error' in status_dict.values():
+        final_state = 'error'
+    elif 'failure' in status_dict.values():
+        final_state = 'failure'
+    else:
+        final_state = 'success'
+
+    # Figure out combined description
+    final_description = ' / '.join(sorted(descr_dict.values()))
+
+    # Update status on PR
 
     base = 'https://api.github.com/repos/{owner}/{repo}/statuses/{sha}'.format(owner=owner, repo=repo, sha=sha)
 
     user = User.objects.get(hook_id=hook_id)
 
     parameters = {}
-    parameters['state'] = 'success'
+    parameters['state'] = final_state
     parameters['target_url'] = 'http://astrofrog.pythonanywhere.com'
-    parameters['description'] = "This is a test of the multistatus webapp"
-    parameters['context'] = 'statusupdater'
+    parameters['description'] = final_description
+    parameters['context'] = 'github-multi-status'
 
     parameters = json.dumps(parameters)
 
