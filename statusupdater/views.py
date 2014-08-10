@@ -1,13 +1,12 @@
-from django.shortcuts import render, redirect, render_to_response
+import requests
+
+from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.conf import settings
 
-from urllib.parse import urljoin, urlencode
-from urllib.request import  urlopen, Request
+from urllib.parse import urlencode
 
 from .models import User
-
-import logging
 
 # Create your views here.
 
@@ -26,10 +25,12 @@ def login(request):
     return redirect(url)
 
 def get_code(request):
-    
+
     code = request.GET.get('code')
     state = request.GET.get('state')
-    
+
+    # TODO - should check state
+
     # Get access token
 
     base = "https://github.com/login/oauth/access_token"
@@ -40,37 +41,29 @@ def get_code(request):
     parameters['code'] = code
     parameters['redirect_uri'] = "http://astrofrog.pythonanywhere.com/login-success"
 
-    url = Request(base, headers={'Accept':'application/json'})
-
-    u = urlopen(url, urlencode(parameters).encode('ascii'))
-    
-    response = u.read()
-
-    #return HttpResponse(response)
-
-    import json
-    response = json.loads(response.decode('utf-8'))
+    response = requests.post(base,
+                            parameters=parameters,
+                            headers={'Accept':'application/json'}).json()
 
     access_token = response['access_token']
+
+    # Find current user
 
     parameters = {}
     parameters['access_token'] = access_token
 
     base = "https://api.github.com/user"
 
-    url = Request(base, headers={'Authorization':'token ' + access_token})
-
-    u = urlopen(url)
-
-    response = u.read()
-
-    response = json.loads(response.decode('utf-8'))
+    response = requests.get(base, headers={'Authorization':'token ' + access_token}).json()
 
     login = response['login']
 
-    User.objects.create(username=login, access_token=access_token)
+    # Create user in database
 
-    return HttpResponse('Success - now add a web hook')
+    user = User(username=login, access_token=access_token)
+    user.save()
+
+    return HttpResponse('Success! Now add a web hook to your GitHub repository')
 
 def hook(response):
 
@@ -97,7 +90,7 @@ def hook(response):
 
     # TODO - won't work for organizations, or repo with multiple committers
     user = User.objects.get(username=owner)
-    
+
     parameters = {}
     parameters['state'] = 'success'
     parameters['target_url'] = 'http://astrofrog.pythonanywhere.com'
@@ -107,7 +100,7 @@ def hook(response):
     parameters = json.dumps(parameters)
 
     import requests
-    response = requests.post(base, parameters, headers={'Authorization':'token ' + user.access_token})
+    response = requests.post(base, parameters,
+                             headers={'Authorization':'token ' + user.access_token})
 
     return HttpResponse('')
-
