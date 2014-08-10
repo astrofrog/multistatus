@@ -5,4 +5,5 @@ from django.db import models
 class User(models.Model):
     username = models.CharField(max_length=200)
     access_token = models.CharField(max_length=200)
+    hook_id = models.CharField(max_length=36)
 
