@@ -1,3 +1,5 @@
+import json
+import uuid
 import requests
 
 from django.shortcuts import redirect
@@ -61,29 +63,37 @@ def get_code(request):
     # Create user in database
 
     try:
-        User.objects.get(username=login)
+        user = User.objects.get(username=login)
     except User.DoesNotExist:
-        user = User(username=login, access_token=access_token)
+        user = User(username=login, access_token=access_token, hook_id=str(uuid.uuid1()))
         user.save()
 
-    return HttpResponse('Success! Now add a web hook to your GitHub repository')
+    # Create hook url
+    hook_url = settings.SITE_URL + "/hook/{hook_id}/".format(user.hook_id)
 
-def hook(response):
+    # Return instructions on setting up webhook
+    return HttpResponse("Authorization successful! Now you can add the following "
+                        "webhook on any repository you have push access to in order "
+                        "to enable the multi-status functionality: {url}".format(url=hook_url))
 
+def hook(response, hook_id):
+
+    # If call is not from GitHub, we should just ignore
     if not 'HTTP_X_GITHUB_EVENT' in response.META:
         return HttpResponse('')
 
+    # We only listen to status updates
     if response.META['HTTP_X_GITHUB_EVENT'] != 'status':
         return HttpResponse('')
 
-    import json
     response = json.loads(response.body.decode('utf-8'))
 
+    # We avoid any circular triggering
     if response.get('context') == 'statusupdater':
         return HttpResponse("won't comment on my own updates")
 
+    # Get the SHA of the commit that triggered the change
     sha = response.get('sha')
-    state = response.get('state')
 
     name = response.get('name')
 
@@ -91,8 +101,7 @@ def hook(response):
 
     base = 'https://api.github.com/repos/{owner}/{repo}/statuses/{sha}'.format(owner=owner, repo=repo, sha=sha)
 
-    # TODO - won't work for organizations, or repo with multiple committers
-    user = User.objects.get(username=owner)
+    user = User.objects.get(hook_id=hook_id)
 
     parameters = {}
     parameters['state'] = 'success'
@@ -106,4 +115,4 @@ def hook(response):
     response = requests.post(base, parameters,
                              headers={'Authorization':'token ' + user.access_token})
 
-    return HttpResponse('')
+    return HttpResponse("Using user=" + user.username + " and hook_id=" + hook_id)
