@@ -69,7 +69,7 @@ def get_code(request):
         user.save()
 
     # Create hook url
-    hook_url = settings.SITE_URL + "/hook/{hook_id}/".format(user.hook_id)
+    hook_url = settings.SITE_URL + "/hook/{hook_id}/".format(hook_id=user.hook_id)
 
     # Return instructions on setting up webhook
     return HttpResponse("Authorization successful! Now you can add the following "
