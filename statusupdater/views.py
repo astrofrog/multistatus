@@ -42,8 +42,8 @@ def get_code(request):
     parameters['redirect_uri'] = "http://astrofrog.pythonanywhere.com/login-success"
 
     response = requests.post(base,
-                            parameters=parameters,
-                            headers={'Accept':'application/json'}).json()
+                             parameters,
+                             headers={'Accept':'application/json'}).json()
 
     access_token = response['access_token']
 
