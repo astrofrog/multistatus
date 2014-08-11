@@ -135,7 +135,7 @@ def hook(response, hook_id):
 
     parameters = {}
     parameters['state'] = final_state
-    parameters['target_url'] = 'http://astrofrog.pythonanywhere.com/view.html?owner={owner}&repo={repo}&sha={sha}'.format(owner=owner, repo=repo, sha=sha)
+    parameters['target_url'] = 'http://astrofrog.pythonanywhere.com/view?owner={owner}&repo={repo}&sha={sha}'.format(owner=owner, repo=repo, sha=sha)
     parameters['description'] = final_description
     parameters['context'] = 'github-multi-status'
 
