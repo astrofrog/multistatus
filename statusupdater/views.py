@@ -131,7 +131,7 @@ def hook(response, hook_id):
 
     parameters = {}
     parameters['state'] = final_state
-    parameters['target_url'] = 'http://astrofrog.pythonanywhere.com'
+    parameters['target_url'] = 'http://astrofrog.pythonanywhere.com/view.html?owner={owner}&repo={repo}&sha={sha}'.format(owner=owner, repo=repo, sha=sha)
     parameters['description'] = final_description
     parameters['context'] = 'github-multi-status'
 
@@ -144,7 +144,9 @@ def hook(response, hook_id):
 
 def status_links(request):
 
-    raise NotImplementedError("")
+    owner = request.GET.get('owner')
+    repo = request.GET.get('repo')
+    sha = request.GET.get('sha')
 
     # Get the list of available statuses in reverse chronological order
     base = 'https://api.github.com/repos/{owner}/{repo}/commits/{sha}/statuses'.format(owner=owner, repo=repo, sha=sha)
@@ -154,8 +156,10 @@ def status_links(request):
     unique_state = {}
     for status in response:
         context = status['context']
-        if context not in Loop and context != 'default' and context != 'github-multi-status':
+        if context not in unique_state and context != 'default' and context != 'github-multi-status':
             unique_state[context] = status
+
+    return render(request, 'statusupdater/view.html', {'unique':unique_state})
 
 def index(request):
     return render(request, 'statusupdater/index.html', {})

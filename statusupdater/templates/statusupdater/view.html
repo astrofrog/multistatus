@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css' />
+
+<link rel="stylesheet" type="text/css" href="/static/style.css" />
+
+<title>Statuses for commit {{ sha }}</title>
+
+</head>
+
+<body>
+
+  <h1>Latest statuses</h1>
+
+  <div class='main_text'>
+    {% for key, value in unique.items %}
+    <p><b>{{ key }}:</b> <a href="{{ value.target_url }}">{{ value.state }}</a></p>
+    {% endfor %}
+
+  </div>
+</body>
+</html>
