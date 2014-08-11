@@ -72,9 +72,7 @@ def get_code(request):
     hook_url = settings.SITE_URL + "/hook/{hook_id}/".format(hook_id=user.hook_id)
 
     # Return instructions on setting up webhook
-    return HttpResponse("Authorization successful! Now you can add the following "
-                        "webhook on any repository you have push access to in order "
-                        "to enable the multi-status functionality: {url}".format(url=hook_url))
+    return render(request, 'statusupdater/success.html', {'hook_url': hook_url})
 
 def hook(response, hook_id):
 
