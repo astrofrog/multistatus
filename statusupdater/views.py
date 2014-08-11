@@ -20,6 +20,8 @@ def login(request):
     parameters['client_id'] = settings.GITHUB_CLIENT_ID
     parameters['redirect_uri'] = settings.SITE_URL + "/get_code"
     parameters['scope'] = 'repo:status'
+
+    # TODO - state should be random
     parameters['state'] = '1290jdjwoqj'
 
     url = base + '?' + urlencode(parameters)
@@ -66,7 +68,7 @@ def get_code(request):
         user = User.objects.get(username=login)
     except User.DoesNotExist:
         user = User(username=login, access_token=access_token, hook_id=str(uuid.uuid1()))
-        
+
     user.login_count += 1
     user.save()
 
