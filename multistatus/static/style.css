@@ -20,3 +20,8 @@ h1 {
 	margin-left: auto;
 	text-align: justify;
 }
+
+.signature {
+	font-size:12px;
+	text-align: center;
+}
