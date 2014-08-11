@@ -1,0 +1,22 @@
+body{
+	line-height: 1.25em;
+	font-size: 14px;
+	color:#333;
+	font-family: 'Open Sans', sans-serif;
+	padding: 30px;
+}
+
+h1,h2 {
+	text-align: center;
+}
+
+h1 {
+	margin-bottom: 70px;
+}
+
+.main_text {
+	width: 700px;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: justify;
+}

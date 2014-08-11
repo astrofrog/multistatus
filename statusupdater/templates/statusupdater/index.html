@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css' />
+
+<link rel="stylesheet" type="text/css" href="/static/style.css" />
+
+<title>MultiStatus</title>
+
+</head>
+
+<body>
+  
+  <h1>Show multiple statuses in GitHub Pull Requests</h1>
+
+  <div class='main_text'>
+  
+  <p>Currently, <a href="http://www.github.com">GitHub</a> only allows one status to be shown in the status bar of a pull request. If using two continuous integration services, such as <a href="http://travis-ci.org">Travis</a> and <a href="http://appveyor.com">AppVeyor</a>, the last updated status is the one shown, which means that it is not possible to see the status from both systems at the same time.</p>
+  <p>This site provides a simple webapp that allows you to show statuses from multiple continuous integration tools in the status bar of a GitHub pull request:<p>
+    <center><img width="700" src='/static/multistatus.png'></center>
+   <p><b>To get started: </b>follow <a href="/login">this link</a> to authorize this webapp to update pull request statuses on GitHub (note that this app will only be able to update pull request statuses to which you have push access). Once you are logged in, you will be instructed to add a webhook to the repositories for which you want to use this webapp</p>
+   <p>This webapp is powered by <a href="https://www.djangoproject.com">Django</a> and runs on <a href="http://www.heroku.com">Heroku</a>. The code is available on <a href="https://github.com/astrofrog/multistatus">GitHub</a>. Feel free to fork and submit improvements!</p>
+  </div>
+</body>
+</html>

@@ -14,4 +14,6 @@ urlpatterns = patterns('',
     url(r'^login', views.login), 
     url(r'^get_code', views.get_code),
     url(r'^hook/(?P<hook_id>[^/]+)/$', views.hook),
+    url(r'^$', views.index),
+
 )

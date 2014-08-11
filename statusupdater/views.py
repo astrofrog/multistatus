@@ -2,7 +2,7 @@ import json
 import uuid
 import requests
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.conf import settings
 
@@ -143,3 +143,21 @@ def hook(response, hook_id):
                              headers={'Authorization':'token ' + user.access_token})
 
     return HttpResponse("Using user=" + user.username + " and hook_id=" + hook_id)
+
+def status_links(request):
+
+    raise NotImplementedError("")
+
+    # Get the list of available statuses in reverse chronological order
+    base = 'https://api.github.com/repos/{owner}/{repo}/commits/{sha}/statuses'.format(owner=owner, repo=repo, sha=sha)
+    response = requests.get(base).json()
+
+    # Loop over and keep track only of the latest status for a given context
+    unique_state = {}
+    for status in response:
+        context = status['context']
+        if context not in Loop and context != 'default' and context != 'github-multi-status':
+            unique_state[context] = status
+
+def index(request):
+    return render(request, 'statusupdater/index.html', {})
