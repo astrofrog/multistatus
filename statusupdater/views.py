@@ -66,7 +66,9 @@ def get_code(request):
         user = User.objects.get(username=login)
     except User.DoesNotExist:
         user = User(username=login, access_token=access_token, hook_id=str(uuid.uuid1()))
-        user.save()
+        
+    user.login_count += 1
+    user.save()
 
     # Create hook url
     hook_url = settings.SITE_URL + "/hook/{hook_id}/".format(hook_id=user.hook_id)
@@ -128,6 +130,8 @@ def hook(response, hook_id):
     base = 'https://api.github.com/repos/{owner}/{repo}/statuses/{sha}'.format(owner=owner, repo=repo, sha=sha)
 
     user = User.objects.get(hook_id=hook_id)
+    user.hook_count += 1
+    user.save()
 
     parameters = {}
     parameters['state'] = final_state
