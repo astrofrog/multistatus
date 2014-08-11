@@ -149,7 +149,7 @@ def hook(response, hook_id):
     response = requests.post(base, parameters,
                              headers={'Authorization':'token ' + user.access_token})
 
-    return HttpResponse("Using user=" + user.username + " and hook_id=" + hook_id + "\nResponse:\n\n" + response.content)
+    return HttpResponse("Using user=" + user.username + " and hook_id=" + hook_id + "\nResponse:\n\n" + response.content.decode('utf-8'))
 
 def status_links(request):
 
