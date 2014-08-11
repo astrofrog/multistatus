@@ -112,6 +112,9 @@ def hook(response, hook_id):
             status_dict[context] = status['state']
             descr_dict[context] = status['description']
 
+    if len(status_dict) <= 1:
+        return HttpResponse("Single status, nothing to do")
+
     # Figure out resulting state
     if 'pending' in status_dict.values():
         final_state = 'pending'
