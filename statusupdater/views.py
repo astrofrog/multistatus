@@ -1,5 +1,8 @@
 import json
 import uuid
+import string
+import random
+
 import requests
 
 from django.shortcuts import redirect, render
@@ -10,7 +13,10 @@ from urllib.parse import urlencode
 
 from .models import User
 
-# Create your views here.
+
+def random_string(size=6, chars=string.ascii_letters + string.digits):
+    return ''.join(random.choice(chars) for i in range(size))
+
 
 def login(request):
 
@@ -20,9 +26,7 @@ def login(request):
     parameters['client_id'] = settings.GITHUB_CLIENT_ID
     parameters['redirect_uri'] = settings.SITE_URL + "/get_code"
     parameters['scope'] = 'repo:status'
-
-    # TODO - state should be random
-    parameters['state'] = '1290jdjwoqj'
+    parameters['state'] = random_string(32)
 
     url = base + '?' + urlencode(parameters)
 
