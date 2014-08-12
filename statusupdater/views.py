@@ -32,6 +32,7 @@ def login(request):
 
     return redirect(url)
 
+
 def get_code(request):
 
     code = request.GET.get('code')
@@ -51,7 +52,7 @@ def get_code(request):
 
     response = requests.post(base,
                              parameters,
-                             headers={'Accept':'application/json'}).json()
+                             headers={'Accept': 'application/json'}).json()
 
     access_token = response['access_token']
 
@@ -62,7 +63,7 @@ def get_code(request):
 
     base = "https://api.github.com/user"
 
-    response = requests.get(base, headers={'Authorization':'token ' + access_token}).json()
+    response = requests.get(base, headers={'Authorization': 'token ' + access_token}).json()
 
     login = response['login']
 
@@ -81,6 +82,7 @@ def get_code(request):
 
     # Return instructions on setting up webhook
     return render(request, 'statusupdater/success.html', {'hook_url': hook_url})
+
 
 def hook(response, hook_id):
 
@@ -151,9 +153,10 @@ def hook(response, hook_id):
     parameters = json.dumps(parameters)
 
     response = requests.post(base, parameters,
-                             headers={'Authorization':'token ' + user.access_token})
+                             headers={'Authorization': 'token ' + user.access_token})
 
     return HttpResponse("Using user=" + user.username + " and hook_id=" + hook_id + "\nResponse:\n\n" + response.content.decode('utf-8'))
+
 
 def status_links(request):
 
@@ -172,7 +175,8 @@ def status_links(request):
         if context not in unique_state and context != 'default' and context != 'github-multi-status':
             unique_state[context] = status
 
-    return render(request, 'statusupdater/view.html', {'unique':unique_state})
+    return render(request, 'statusupdater/view.html', {'unique': unique_state})
+
 
 def index(request):
     return render(request, 'statusupdater/index.html', {})
