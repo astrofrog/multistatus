@@ -1,3 +1,8 @@
+Obsolete
+========
+github can now handle multiple statuses without the need for a third party app.
+see: https://github.com/blog/1935-see-results-from-all-pull-request-status-checks
+
 About
 =====
 
